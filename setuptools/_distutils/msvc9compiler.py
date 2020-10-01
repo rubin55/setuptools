@@ -381,8 +381,8 @@ class MSVCCompiler(CCompiler) :
             self.cc = self.find_exe("cl.exe").replace('HostX64', 'Hostx86')
             self.linker = self.find_exe("link.exe").replace('HostX64', 'Hostx86')
             self.lib = self.find_exe("lib.exe").replace('HostX64', 'Hostx86')
-            self.rc = self.find_exe("rc.exe").replace('x64', 'x86')   # resource compiler
-            self.mc = self.find_exe("mc.exe").replace('x64', 'x86')   # message compiler
+            self.rc = self.find_exe("rc.exe").replace('x64', 'arm64')   # resource compiler
+            self.mc = self.find_exe("mc.exe").replace('x64', 'arm64')   # message compiler
             #self.set_path_env_var('lib')
             #self.set_path_env_var('include')
 
