@@ -2,8 +2,6 @@
 ``setuptools`` Quickstart
 ==========================
 
-.. contents::
-
 Installation
 ============
 
@@ -21,9 +19,8 @@ the backend (build system) it wants to use. The distribution can then
 be generated with whatever tools that provides a ``build sdist``-alike
 functionality. While this may appear cumbersome, given the added pieces,
 it in fact tremendously enhances the portability of your package. The
-change is driven under `PEP 517 <https://www.python.org/dev/peps/pep-0517/#
-build-requirements>``. To learn more about Python packaging in general,
-navigate to the `bottom <Resources on python packaging>`_ of this page.
+change is driven under :pep:`PEP 517 <517#build-requirements>`. To learn more about Python packaging in general,
+navigate to the :ref:`bottom <packaging-resources>` of this page.
 
 
 Basic Use
@@ -38,33 +35,52 @@ package your project:
     requires = ["setuptools", "wheel"]
     build-backend = "setuptools.build_meta"
 
-Then, you will need a ``setup.cfg`` to specify your package information,
-such as metadata, contents, dependencies, etc. Here we demonstrate the minimum
+Then, you will need a ``setup.cfg`` or ``setup.py`` to specify your package
+information, such as metadata, contents, dependencies, etc. Here we demonstrate
+the minimum
 
-.. code-block:: ini
+.. tab:: setup.cfg
 
-    [metadata]
-    name = "mypackage"
-    version = 0.0.1
+    .. code-block:: ini
 
-    [options]
-    packages = "mypackage"
-    install_requires =
-      requests
-      importlib; python_version == "2.6"
+        [metadata]
+        name = mypackage
+        version = 0.0.1
+
+        [options]
+        packages = mypackage
+        install_requires =
+            requests
+            importlib; python_version == "2.6"
+
+.. tab:: setup.py
+
+    .. code-block:: python
+
+        from setuptools import setup
+
+        setup(
+            name='mypackage',
+            version='0.0.1',
+            packages=['mypackage'],
+            install_requires=[
+                'requests',
+                'importlib; python_version == "2.6"',
+            ],
+        )
 
 This is what your project would look like::
 
     ~/mypackage/
         pyproject.toml
-        setup.cfg
+        setup.cfg # or setup.py
         mypackage/__init__.py
 
-Then, you need an installer, such as `pep517 <https://pypi.org/project/pep517/>`_
-which you can obtain via ``pip install pep517``. After downloading it, invoke
-the installer::
+Then, you need an builder, such as :std:doc:`PyPA build <pypa-build:index>`
+which you can obtain via ``pip install build``. After downloading it, invoke
+the builder::
 
-    python -m pep517.build
+    python -m build
 
 You now have your distribution ready (e.g. a ``tar.gz`` file and a ``.whl``
 file in the ``dist`` directory), which you can upload to PyPI!
@@ -72,7 +88,7 @@ file in the ``dist`` directory), which you can upload to PyPI!
 Of course, before you release your project to PyPI, you'll want to add a bit
 more information to your setup script to help people find or learn about your
 project.  And maybe your project will have grown by then to include a few
-dependencies, and perhaps some data files and scripts. In the next few section,
+dependencies, and perhaps some data files and scripts. In the next few sections,
 we will walk through those additional but essential information you need
 to specify to properly package your project.
 
@@ -82,8 +98,8 @@ Automatic package discovery
 For simple projects, it's usually easy enough to manually add packages to
 the ``packages`` keyword in ``setup.cfg``.  However, for very large projects
 , it can be a big burden to keep the package list updated. ``setuptools``
-therefore provides two convenient tools to ease the burden: ``find: `` and
-``find_namespace: ``. To use it in your project:
+therefore provides two convenient tools to ease the burden: :literal:`find:\ ` and
+:literal:`find_namespace:\ `. To use it in your project:
 
 .. code-block:: ini
 
@@ -107,22 +123,21 @@ use, go to :ref:`package_discovery`
 Entry points and automatic script creation
 ===========================================
 Setuptools support automatic creation of scripts upon installation, that runs
-code within your package if you specify them with the ``entry_point`` keyword.
+code within your package if you specify them with the ``entry_points`` keyword.
 This is what allows you to run commands like ``pip install`` instead of having
 to type ``python -m pip install``. To accomplish this, add the entry_points
 keyword in your ``setup.cfg``:
 
 .. code-block:: ini
 
-    [options]
-    entry_points =
-        [console_script]
+    [options.entry_points]
+    console_scripts =
         main = mypkg:some_func
 
 When this project is installed, a ``main`` script will be installed and will
 invoke the ``some_func`` in the ``__init__.py`` file when called by the user.
 For detailed usage, including managing the additional or optional dependencies,
-go to :ref:`entry_point`.
+go to :doc:`entry_point`.
 
 
 Dependency management
@@ -147,14 +162,16 @@ additional keywords such as ``setup_requires`` that allows you to install
 dependencies before running the script, and ``extras_requires`` that take
 care of those needed by automatically generated scripts. It also provides
 mechanisms to handle dependencies that are not in PyPI. For more advanced use,
-see :ref:`dependency_management`
+see :doc:`dependency_management`
 
+
+.. _Including Data Files:
 
 Including Data Files
 ====================
 The distutils have traditionally allowed installation of "data files", which
 are placed in a platform-specific location. Setuptools offers three ways to
-specify data files to be included in your packages. For the simpliest use, you
+specify data files to be included in your packages. For the simplest use, you
 can simply use the ``include_package_data`` keyword:
 
 .. code-block:: ini
@@ -164,13 +181,13 @@ can simply use the ``include_package_data`` keyword:
 
 This tells setuptools to install any data files it finds in your packages.
 The data files must be specified via the distutils' ``MANIFEST.in`` file.
-For more details, see :ref:`datafiles`
+For more details, see :doc:`datafiles`
 
 
 Development mode
 ================
 ``setuptools`` allows you to install a package without copying any files
-to your interpretor directory (e.g. the ``site-packages`` directory). This
+to your interpreter directory (e.g. the ``site-packages`` directory). This
 allows you to modify your source code and have the changes take effect without
 you having to rebuild and reinstall. This is currently incompatible with
 PEP 517 and therefore it requires a ``setup.py`` script with the following
@@ -183,26 +200,27 @@ Then::
 
     pip install --editable .
 
-This creates a link file in your interpretor site package directory which
-associate with your source code. For more information, see: (WIP)
+This creates a link file in your interpreter site package directory which
+associate with your source code. For more information, see :doc:`development_mode`.
 
 
 Uploading your package to PyPI
 ==============================
 After generating the distribution files, next step would be to upload your
 distribution so others can use it. This functionality is provided by
-``twine <https://pypi.org/project/twine/>`` and we will only demonstrate the
+`twine <https://pypi.org/project/twine/>`_ and we will only demonstrate the
 basic use here.
 
 
 Transitioning from ``setup.py`` to ``setup.cfg``
-==================================================
-To avoid executing arbitary scripts and boilerplate code, we are transitioning
+================================================
+To avoid executing arbitrary scripts and boilerplate code, we are transitioning
 into a full-fledged ``setup.cfg`` to declare your package information instead
 of running ``setup()``. This inevitably brings challenges due to a different
 syntax. Here we provide a quick guide to understanding how ``setup.cfg`` is
 parsed by ``setuptool`` to ease the pain of transition.
 
+.. _packaging-resources:
 
 Resources on Python packaging
 =============================

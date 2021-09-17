@@ -1,66 +1,6 @@
-import subprocess
-import sys
-import os
+extensions = ['sphinx.ext.autodoc', 'jaraco.packaging.sphinx', 'rst.linker']
 
-
-# hack to run the bootstrap script so that jaraco.packaging.sphinx
-# can invoke setup.py
-'READTHEDOCS' in os.environ and subprocess.check_call(
-    [sys.executable, '-m', 'bootstrap'],
-    cwd=os.path.join(os.path.dirname(__file__), os.path.pardir),
-)
-
-# -- General configuration --
-
-extensions = ['jaraco.packaging.sphinx', 'rst.linker']
-
-# Add any paths that contain templates here, relative to this directory.
-templates_path = ['_templates']
-
-# The master toctree document.
-master_doc = 'index'
-
-# List of directories, relative to source directory, that shouldn't be searched
-# for source files.
-exclude_trees = []
-
-# The name of the Pygments (syntax highlighting) style to use.
-pygments_style = 'sphinx'
-
-# -- Options for HTML output --
-
-# The theme to use for HTML and HTML Help pages.  Major themes that come with
-# Sphinx are currently 'default' and 'sphinxdoc'.
-html_theme = 'nature'
-
-# Add any paths that contain custom themes here, relative to this directory.
-html_theme_path = ['_theme']
-
-# If true, SmartyPants will be used to convert quotes and dashes to
-# typographically correct entities.
-html_use_smartypants = True
-
-# Custom sidebar templates, maps document names to template names.
-html_sidebars = {
-    'index': [
-        'relations.html', 'sourcelink.html', 'indexsidebar.html',
-        'searchbox.html']}
-
-# If false, no module index is generated.
-html_use_modindex = False
-
-# If false, no index is generated.
-html_use_index = False
-
-# -- Options for LaTeX output --
-
-# Grouping the document tree into LaTeX files. List of tuples
-# (source start file, target name, title, author,
-# documentclass [howto/manual]).
-latex_documents = [(
-    'index', 'Setuptools.tex', 'Setuptools Documentation',
-    'The fellowship of the packaging', 'manual',
-)]
+master_doc = "index"
 
 link_files = {
     '../CHANGES.rst': dict(
@@ -132,3 +72,81 @@ link_files = {
         ],
     ),
 }
+
+# Be strict about any broken references:
+nitpicky = True
+
+intersphinx_mapping = {
+    'pypa-build': ('https://pypa-build.readthedocs.io/en/latest/', None)
+}
+
+# Add support for linking usernames
+github_url = 'https://github.com'
+github_sponsors_url = f'{github_url}/sponsors'
+extlinks = {
+    'user': (f'{github_sponsors_url}/%s', '@'),  # noqa: WPS323
+}
+extensions += ['sphinx.ext.extlinks', 'sphinx.ext.intersphinx']
+
+# Ref: https://github.com/python-attrs/attrs/pull/571/files\
+#      #diff-85987f48f1258d9ee486e3191495582dR82
+default_role = 'any'
+
+# HTML theme
+html_theme = 'furo'
+
+# Add support for inline tabs
+extensions += ['sphinx_inline_tabs']
+
+# Support for distutils
+
+# Ref: https://stackoverflow.com/a/30624034/595220
+nitpick_ignore = [
+    ('c:func', 'SHGetSpecialFolderPath'),  # ref to MS docs
+    ('envvar', 'DISTUTILS_DEBUG'),  # undocumented
+    ('envvar', 'HOME'),  # undocumented
+    ('envvar', 'PLAT'),  # undocumented
+    ('py:attr', 'CCompiler.language_map'),  # undocumented
+    ('py:attr', 'CCompiler.language_order'),  # undocumented
+    ('py:class', 'distutils.dist.Distribution'),  # undocumented
+    ('py:class', 'distutils.extension.Extension'),  # undocumented
+    ('py:class', 'BorlandCCompiler'),  # undocumented
+    ('py:class', 'CCompiler'),  # undocumented
+    ('py:class', 'CygwinCCompiler'),  # undocumented
+    ('py:class', 'distutils.dist.DistributionMetadata'),  # undocumented
+    ('py:class', 'FileList'),  # undocumented
+    ('py:class', 'IShellLink'),  # ref to MS docs
+    ('py:class', 'MSVCCompiler'),  # undocumented
+    ('py:class', 'OptionDummy'),  # undocumented
+    ('py:class', 'UnixCCompiler'),  # undocumented
+    ('py:exc', 'CompileError'),  # undocumented
+    ('py:exc', 'DistutilsExecError'),  # undocumented
+    ('py:exc', 'DistutilsFileError'),  # undocumented
+    ('py:exc', 'LibError'),  # undocumented
+    ('py:exc', 'LinkError'),  # undocumented
+    ('py:exc', 'PreprocessError'),  # undocumented
+    ('py:func', 'distutils.CCompiler.new_compiler'),  # undocumented
+    # undocumented:
+    ('py:func', 'distutils.dist.DistributionMetadata.read_pkg_file'),
+    ('py:func', 'distutils.file_util._copy_file_contents'),  # undocumented
+    ('py:func', 'distutils.log.debug'),  # undocumented
+    ('py:func', 'distutils.spawn.find_executable'),  # undocumented
+    ('py:func', 'distutils.spawn.spawn'),  # undocumented
+    # TODO: check https://docutils.rtfd.io in the future
+    ('py:mod', 'docutils'),  # there's no Sphinx site documenting this
+]
+
+# Allow linking objects on other Sphinx sites seamlessly:
+intersphinx_mapping.update(
+    python=('https://docs.python.org/3', None),
+    python2=('https://docs.python.org/2', None),
+)
+
+# Add support for the unreleased "next-version" change notes
+extensions += ['sphinxcontrib.towncrier']
+# Extension needs a path from here to the towncrier config.
+towncrier_draft_working_directory = '..'
+# Avoid an empty section for unpublished changes.
+towncrier_draft_include_empty = False
+
+extensions += ['jaraco.tidelift']

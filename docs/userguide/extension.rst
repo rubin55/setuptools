@@ -1,3 +1,5 @@
+.. _Creating ``distutils`` Extensions:
+
 Creating ``distutils`` Extensions
 =================================
 
@@ -9,8 +11,8 @@ the extension just refer to it in their ``setup_requires`` argument.
 With ``setuptools``, your distutils extension projects can hook in new
 commands and ``setup()`` arguments just by defining "entry points".  These
 are mappings from command or argument names to a specification of where to
-import a handler from.  (See the section on `Dynamic Discovery of Services and
-Plugins`_ above for some more background on entry points.)
+import a handler from.  (See the section on :ref:`Dynamic Discovery of
+Services and Plugins` above for some more background on entry points.)
 
 
 Adding Commands
@@ -120,6 +122,8 @@ plugin is encouraged to load the configuration/settings for their behavior
 independently.
 
 
+.. _Adding new EGG-INFO Files:
+
 Adding new EGG-INFO Files
 -------------------------
 
@@ -173,6 +177,9 @@ the ``cmd`` object's ``write_file()``, ``delete_file()``, and
 ``write_or_delete_file()`` methods exclusively for your file operations.  See
 those methods' docstrings for more details.
 
+
+.. _Adding Support for Revision Control Systems:
+
 Adding Support for Revision Control Systems
 -------------------------------------------------
 
@@ -195,7 +202,7 @@ called "foobar", you would write a function something like this:
 .. code-block:: python
 
     def find_files_for_foobar(dirname):
-        # loop to yield paths that start with `dirname`
+        ...  # loop to yield paths that start with `dirname`
 
 And you would register it in a setup script using something like this::
 

@@ -6,49 +6,58 @@ Package Discovery and Namespace Package
 
 .. note::
     a full specification for the keyword supplied to ``setup.cfg`` or
-    ``setup.py`` can be found at :ref:`keywords reference <keywords_ref>`
+    ``setup.py`` can be found at :doc:`keywords reference <keywords>`
 
 .. note::
     the examples provided here are only to demonstrate the functionality
     introduced. More metadata and options arguments need to be supplied
     if you want to replicate them on your system. If you are completely
-    new to setuptools, the :ref:`quickstart section <quickstart>` is a good
+    new to setuptools, the :doc:`quickstart section <quickstart>` is a good
     place to start.
 
 ``Setuptools`` provide powerful tools to handle package discovery, including
 support for namespace package. Normally, you would specify the package to be
 included manually in the following manner:
 
-.. code-block:: ini
+.. tab:: setup.cfg
 
-    [options]
-    #...
-    packages =
-        mypkg1
-        mypkg2
+    .. code-block:: ini
 
-.. code-block:: python
-
-    setup(
+        [options]
         #...
-        packages = ['mypkg1', 'mypkg2']
-    )
+        packages =
+            mypkg1
+            mypkg2
+
+.. tab:: setup.py
+
+    .. code-block:: python
+
+        setup(
+            # ...
+            packages=['mypkg1', 'mypkg2']
+        )
 
 This can get tiresome reallly quickly. To speed things up, we introduce two
 functions provided by setuptools:
 
-.. code-block:: ini
+.. tab:: setup.cfg
 
-    [options]
-    packages = find:
-    #or
-    packages = find_namespace:
+    .. code-block:: ini
 
-.. code-block:: python
+        [options]
+        packages = find:
+        #or
+        packages = find_namespace:
 
-    from setuptools import find_packages
-    #or
-    from setuptools import find_namespace_packages
+.. tab:: setup.py
+
+    .. code-block:: python
+
+        from setuptools import find_packages
+
+        # or
+        from setuptools import find_namespace_packages
 
 
 Using ``find:`` or ``find_packages``
@@ -71,31 +80,37 @@ it, consider the following directory
 To have your setup.cfg or setup.py to automatically include packages found
 in ``src`` that starts with the name ``pkg`` and not ``additional``:
 
-.. code-block:: ini
+.. tab:: setup.cfg
 
-    [options]
-    packages = find:
-    package_dir =
-        =src
+    .. code-block:: ini
 
-    [options.packages.find]
-    where = src
-    include = pkg*
-    exclude = additional
+        [options]
+        packages = find:
+        package_dir =
+            =src
 
-.. code-block:: python
+        [options.packages.find]
+        where = src
+        include = pkg*
+        exclude = additional
 
-    setup(
-        #...
-        packages = find_packages(
-            where = 'src',
-            include = ['pkg*',],
-            exclude = ['tests',]
-        ),
-        package_dir = {"":"src"}
-        #...
-    )
+.. tab:: setup.py
 
+    .. code-block:: python
+
+        setup(
+            # ...
+            packages=find_packages(
+                where='src',
+                include=['pkg*'],
+                exclude=['additional'],
+            ),
+            package_dir={"": "src"}
+            # ...
+        )
+
+
+.. _Namespace Packages:
 
 Using ``find_namespace:`` or ``find_namespace_packages``
 ========================================================
@@ -115,7 +130,7 @@ If both ``Desktop`` and ``Library`` are on your ``PYTHONPATH``, then a
 namespace package called ``timmins`` will be created automatically for you when
 you invoke the import mechanism, allowing you to accomplish the following
 
-.. code-block:: python
+.. code-block:: pycon
 
     >>> import timmins.foo
     >>> import timmins.bar
@@ -142,7 +157,7 @@ to use ``find_namespace:``:
         =src
     packages = find_namespace:
 
-    [options.packages.find_namespace]
+    [options.packages.find]
     where = src
 
 When you install the zipped distribution, ``timmins.foo`` would become
@@ -193,17 +208,21 @@ following:
 
 And the ``namespace_packages`` keyword in your ``setup.cfg`` or ``setup.py``:
 
-.. code-block:: ini
+.. tab:: setup.cfg
 
-    [options]
-    namespace_packages = timmins
+    .. code-block:: ini
 
-.. code-block:: python
+        [options]
+        namespace_packages = timmins
 
-    setup(
-        # ...
-        namespace_packages = ['timmins']
-    )
+.. tab:: setup.py
+
+    .. code-block:: python
+
+        setup(
+            # ...
+            namespace_packages=['timmins']
+        )
 
 And your directory should look like this
 
